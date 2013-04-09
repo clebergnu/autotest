@@ -263,7 +263,7 @@ class TestAttribute(dbmodels.Model, model_logic.ModelExtensions):
 class IterationAttribute(dbmodels.Model, model_logic.ModelExtensions):
     # this isn't really a primary key, but it's necessary to appease Django
     # and is harmless as long as we're careful
-    test = dbmodels.ForeignKey(Test, db_column='test_idx', primary_key=True)
+    test = dbmodels.IntegerField(db_column='id', primary_key=True)
     iteration = dbmodels.IntegerField()
     attribute = dbmodels.CharField(max_length=90)
     value = dbmodels.CharField(blank=True, max_length=300)
