@@ -41,7 +41,7 @@ class IterationAttributeTest(unittest.TestCase,
     def test_single_attributes_for_one_test(self):
         test = self._create_test()
         iteration_attr = models.IterationAttribute.objects.create(
-            test=test.pk,
+            test=test,
             iteration=1,
             attribute='attribute',
             value='value')
