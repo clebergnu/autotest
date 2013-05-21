@@ -1,12 +1,17 @@
-# http://code.activestate.com/recipes/500261-named-tuples/
+"""
+This module contains a backport for collections.namedtuple obtained from
+http://code.activestate.com/recipes/500261-named-tuples/
+"""
 
 from operator import itemgetter as _itemgetter
 from keyword import iskeyword as _iskeyword
 import sys as _sys
 
 
+#pylint: disable=I0011,R0914,W0141,W0122,W0612,C0103,W0212,R0912
 def namedtuple(typename, field_names, verbose=False, rename=False):
-    """Returns a new subclass of tuple with named fields.
+    """
+    Returns a new subclass of tuple with named fields.
 
     >>> Point = namedtuple('Point', 'x y')
     >>> Point.__doc__                   # docstring for the new class
@@ -33,7 +38,6 @@ def namedtuple(typename, field_names, verbose=False, rename=False):
 
     Changes:
     * autopep8 reformatting
-
     """
 
     # Parse and validate the field names.  Validation serves two purposes,
@@ -59,13 +63,15 @@ def namedtuple(typename, field_names, verbose=False, rename=False):
     for name in (typename,) + field_names:
         if not min(c.isalnum() or c == '_' for c in name):
             raise ValueError(
-                'Type names and field names can only contain alphanumeric characters and underscores: %r' % name)
+                'Type names and field names can only contain alphanumeric '
+                'characters and underscores: %r' % name)
         if _iskeyword(name):
             raise ValueError(
                 'Type names and field names cannot be a keyword: %r' % name)
         if name[0].isdigit():
             raise ValueError(
-                'Type names and field names cannot start with a number: %r' % name)
+                'Type names and field names cannot start with a '
+                'number: %r' % name)
     seen_names = set()
     for name in field_names:
         if name.startswith('_') and not rename:
