@@ -1,12 +1,15 @@
-# http://code.activestate.com/recipes/523034-emulate-collectionsdefaultdict/
+'''
+Backport of the defaultdict module, obtained from:
+http://code.activestate.com/recipes/523034-emulate-collectionsdefaultdict/
+'''
 
-
+# pylint: disable=I0011,C0103
 class defaultdict(dict):
     """
-    collections.defaultdict is a handy shortcut added in Python 2.5 which can be
-    emulated in older versions of Python. This recipe tries to backport defaultdict
-    exactly and aims to be safe to subclass and extend without worrying if the
-    base class is in C or is being emulated.
+    collections.defaultdict is a handy shortcut added in Python 2.5 which can
+    be emulated in older versions of Python. This recipe tries to backport
+    defaultdict exactly and aims to be safe to subclass and extend without
+    worrying if the base class is in C or is being emulated.
 
     http://code.activestate.com/recipes/523034-emulate-collectionsdefaultdict/
     :codeauthor: Jason Kirtland
@@ -16,7 +19,6 @@ class defaultdict(dict):
     * replaced self.items() with self.iteritems() to fix Pickle bug as
     recommended by Aaron Lav
     * reformated with autopep8
-
     """
     def __init__(self, default_factory=None, *a, **kw):
         if (default_factory is not None and
@@ -50,6 +52,7 @@ class defaultdict(dict):
     def __copy__(self):
         return type(self)(self.default_factory, self)
 
+    # pylint: disable=I0011,W0613
     def __deepcopy__(self, memo):
         import copy
         return type(self)(self.default_factory,
