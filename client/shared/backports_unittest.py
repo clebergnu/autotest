@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 #  Copyright(c) 2013 Intel Corporation.
 #
 #  This program is free software; you can redistribute it and/or modify it
@@ -18,7 +20,19 @@
 
 import unittest
 import sys
-import backports
+try:
+    import autotest.common as common
+except ImportError:
+    import common
+from autotest.client.shared import backports
+
+
+def is_python_26_or_greater():
+    if sys.version_info[0] >= 3:
+        return True
+    if sys.version_info[0] >= 2 and sys.version_info[1] >= 6:
+        return True
+    return False
 
 
 class TestBackports(unittest.TestCase):
@@ -41,11 +55,12 @@ class TestBackports(unittest.TestCase):
     def test_bin():
         assert backports.bin(170) == '0b10101010'
 
-    @staticmethod
-    def test_many_bin():
-        for n in xrange(10000):
-            assert backports.bin(n) == bin(n)
-        assert backports.bin(sys.maxint) == bin(sys.maxint)
+    if is_python_26_or_greater():
+        @staticmethod
+        def test_many_bin():
+            for n in xrange(10000):
+                assert backports.bin(n) == bin(n)
+            assert backports.bin(sys.maxint) == bin(sys.maxint)
 
     @staticmethod
     def test_next():
@@ -56,3 +71,7 @@ class TestBackports(unittest.TestCase):
             assert False
         except TypeError:
             pass
+
+
+if __name__ == '__main__':
+    unittest.main()
