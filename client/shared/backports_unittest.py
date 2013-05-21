@@ -46,40 +46,42 @@ Point = namedtuple('Point', 'x, y')
 
 class TestBackports(unittest.TestCase):
 
-    @staticmethod
-    def test_any():
-        assert backports.any([False, 0, 1, "", True, set()])
-        assert not backports.any([])
-        assert not backports.any(set())
-        assert not backports.any(["", 0, False])
+    def test_any(self):
+        self.assertTrue(backports.any([False, 0, 1, "", True, set()]))
+        self.assertFalse(backports.any([]))
+        self.assertFalse(backports.any(set()))
+        self.assertFalse(backports.any(["", 0, False]))
 
-    @staticmethod
-    def test_all():
-        assert not backports.all([False, 0, 1, "", True])
-        assert backports.all([])
-        assert not backports.all(["", 0, False, set()])
-        assert backports.all(["True", 1, True])
 
-    @staticmethod
-    def test_bin():
-        assert backports.bin(170) == '0b10101010'
+    def test_all(self):
+        self.assertFalse(backports.all([False, 0, 1, "", True]))
+        self.assertTrue(backports.all([]))
+        self.assertFalse(backports.all(["", 0, False, set()]))
+        self.assertTrue(backports.all(["True", 1, True]))
+
+
+    def test_bin(self):
+        self.assertEquals(backports.bin(170), '0b10101010')
 
     if is_python_26_or_greater():
-        @staticmethod
-        def test_many_bin():
+        def test_many_bin(self):
             for n in xrange(10000):
-                assert backports.bin(n) == bin(n)
-            assert backports.bin(sys.maxint) == bin(sys.maxint)
+                self.assertEquals(backports.bin(n), bin(n))
+                self.assertEquals(backports.bin(sys.maxint), bin(sys.maxint))
 
-    @staticmethod
-    def test_next():
-        assert backports.next((x * 2 for x in range(3, 5))) == 6
-        assert backports.next((x * 2 for x in range(3, 5) if x > 100), "default") == "default"
-        try:
-            backports.next((x * 2 for x in range(3, 5) if x > 100), "default", "extra arg")
-            assert False
-        except TypeError:
-            pass
+
+    def test_next(self):
+        self.assertEquals(backports.next((x * 2 for x in range(3, 5))), 6)
+        self.assertEquals(backports.next((x * 2 for x in range(3, 5) if x > 100),
+                                         "default"), "default")
+
+
+    def test_next_extra_arg(self):
+        @staticmethod
+        def _fail_extra_arg():
+            backports.next((x * 2 for x in range(3, 5) if x > 100),
+                           ("default", "extra arg"))
+        self.assertRaises(TypeError, _fail_extra_arg)
 
 
     def test_namedtuple_pickle(self):
