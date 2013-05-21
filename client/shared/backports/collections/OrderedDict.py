@@ -1,6 +1,10 @@
-# http://code.activestate.com/recipes/576693-ordered-dictionary-for-py24/
-# Backport of OrderedDict() class that runs on Python 2.4, 2.5, 2.6, 2.7 and pypy.
-# Passes Python2.7's test suite and incorporates all the latest updates.
+'''
+Backport of OrderedDict() class that runs on Python 2.4, 2.5, 2.6, 2.7 and
+pypy. Passes Python2.7's test suite and incorporates all the latest updates.
+
+Obtained from:
+http://code.activestate.com/recipes/576693-ordered-dictionary-for-py24/
+'''
 
 try:
     from thread import get_ident as _get_ident
@@ -25,18 +29,22 @@ class OrderedDict(dict):
     # An inherited dict maps keys to values.
     # The inherited dict provides __getitem__, __len__, __contains__, and get.
     # The remaining methods are order-aware.
-    # Big-O running times for all methods are the same as for regular dictionaries.
+    # Big-O running times for all methods are the same as for regular
+    # dictionaries.
 
-    # The internal self.__map dictionary maps keys to links in a doubly linked list.
+    # The internal self.__map dictionary maps keys to links in a doubly linked
+    # list.
     # The circular doubly linked list starts and ends with a sentinel element.
     # The sentinel element never gets deleted (this simplifies the algorithm).
     # Each link is stored as a list of length three:  [PREV, NEXT, KEY].
-
+    # pylint: disable=I0011,W0231
     def __init__(self, *args, **kwds):
-        '''Initialize an ordered dictionary.  Signature is the same as for
-        regular dictionaries, but keyword arguments are not recommended
-        because their insertion order is arbitrary.
+        '''
+        Initialize an ordered dictionary.
 
+        Signature is the same as for regular dictionaries, but keyword
+        arguments are not recommended because their insertion order is
+        arbitrary.
         '''
         if len(args) > 1:
             raise TypeError('expected at most 1 arguments, got %d' % len(args))
@@ -50,8 +58,9 @@ class OrderedDict(dict):
 
     def __setitem__(self, key, value, dict_setitem=dict.__setitem__):
         'od.__setitem__(i, y) <==> od[i]=y'
-        # Setting a new item creates a new link which goes at the end of the linked
-        # list, and the inherited dictionary is updated with the new key/value pair.
+        # Setting a new item creates a new link which goes at the end of the
+        # linked list, and the inherited dictionary is updated with the new
+        # key/value pair.
         if key not in self:
             root = self.__root
             last = root[0]
@@ -61,7 +70,8 @@ class OrderedDict(dict):
     def __delitem__(self, key, dict_delitem=dict.__delitem__):
         'od.__delitem__(y) <==> del od[y]'
         # Deleting an existing item uses self.__map to find the link which is
-        # then removed by updating the links in the predecessor and successor nodes.
+        # then removed by updating the links in the predecessor and successor
+        # nodes
         dict_delitem(self, key)
         link_prev, link_next, key = self.__map.pop(key)
         link_prev[1] = link_next
@@ -146,6 +156,7 @@ class OrderedDict(dict):
         for k in self:
             yield (k, self[k])
 
+    # pylint: disable=I0011,E0211,E1103
     def update(*args, **kwds):
         '''od.update(E, **F) -> None.  Update od from dict/iterable E and F.
 
@@ -177,14 +188,18 @@ class OrderedDict(dict):
         for key, value in kwds.items():
             self[key] = value
 
-    __update = update  # let subclasses override update without breaking __init__
+    # let subclasses override update without breaking __init__
+    __update = update
 
     __marker = object()
 
     def pop(self, key, default=__marker):
-        '''od.pop(k[,d]) -> v, remove specified key and return the corresponding value.
-        If key is not found, d is returned if given, otherwise KeyError is raised.
+        '''
+        od.pop(k[,d]) -> v, remove specified key and return the corresponding
+        value.
 
+        If key is not found, d is returned if given, otherwise KeyError is
+        raised.
         '''
         if key in self:
             result = self[key]
@@ -201,6 +216,7 @@ class OrderedDict(dict):
         self[key] = default
         return default
 
+    # pylint: disable=I0011,W0102
     def __repr__(self, _repr_running={}):
         'od.__repr__() <==> repr(od)'
         call_key = id(self), _get_ident()
@@ -234,10 +250,10 @@ class OrderedDict(dict):
         and values equal to v (which defaults to None).
 
         '''
-        d = cls()
+        dict_instance = cls()
         for key in iterable:
-            d[key] = value
-        return d
+            dict_instance[key] = value
+        return dict_instance
 
     def __eq__(self, other):
         '''od.__eq__(y) <==> od==y.  Comparison to another OD is order-sensitive
