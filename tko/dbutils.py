@@ -27,7 +27,7 @@ def insert_kernel(kernel):
     tko_kernel.printable = kernel.base
 
     # If this kernel has any significant patches, append their hash
-    # as diferentiator.
+    # as differentiator.
     patch_count = 0
     for patch in kernel.patches:
         match = re.match(r'.*(-mm[0-9]+|-git[0-9]+)\.(bz2|gz)$',
