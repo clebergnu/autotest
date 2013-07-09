@@ -1,4 +1,4 @@
-import os
+import os, logging
 
 from autotest.tko import utils
 from autotest.frontend import setup_django_environment
@@ -85,6 +85,7 @@ def insert_test(job, test, tko_job=None, tko_machine=None):
                                                 user_created=False).delete()
 
     else:
+        logging.info('New test being created. Data: %s', tko_test_data)
         tko_test = tko_models.Test.objects.create(**tko_test_data)
 
     for i in test.iterations:
