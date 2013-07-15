@@ -114,6 +114,7 @@ class Migration(SchemaMigration):
             'priority': ('django.db.models.fields.SmallIntegerField', [], {'default': '1', 'blank': 'True'}),
             'reboot_after': ('django.db.models.fields.SmallIntegerField', [], {'default': '2', 'blank': 'True'}),
             'reboot_before': ('django.db.models.fields.SmallIntegerField', [], {'default': '1', 'blank': 'True'}),
+            'reserve_hosts': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'run_verify': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'synch_count': ('django.db.models.fields.IntegerField', [], {'default': '1', 'null': 'True'}),
             'timeout': ('django.db.models.fields.IntegerField', [], {'default': "'72'"})
@@ -273,3 +274,4 @@ class Migration(SchemaMigration):
     }
 
     complete_apps = ['afe']
+
