@@ -152,7 +152,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'test': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tko.Test']", 'db_column': "'test_idx'"}),
             'user_created': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'value': ('django.db.models.fields.CharField', [], {'max_length': '300', 'blank': 'True'})
+            'value': ('django.db.models.fields.CharField', [], {'max_length': '1024', 'blank': 'True'})
         },
         'tko.testlabel': {
             'Meta': {'object_name': 'TestLabel', 'db_table': "'tko_test_labels'"},
