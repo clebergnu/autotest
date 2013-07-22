@@ -39,5 +39,41 @@ class KojiDirIndexParserTest(unittest.TestCase):
         self.assertNotIn('baz-3.0-3.rpm', parser.package_file_names)
 
 
+class RPMFileNameInfoTest(unittest.TestCase):
+    '''
+    Test class for RPMFileNameInfo
+    '''
+
+    FILENAME = 'kernel-3.9.5-301.fc19.x86_64.rpm'
+
+    def test_get_filename_without_suffix(self):
+        rfi = koji_utils.RPMFileNameInfo(self.FILENAME)
+        self.assertEqual(rfi.get_filename_without_suffix(),
+                         'kernel-3.9.5-301.fc19.x86_64')
+
+
+    def test_get_filename_without_arch(self):
+        rfi = koji_utils.RPMFileNameInfo(self.FILENAME)
+        self.assertEqual(rfi.get_filename_without_arch(),
+                         'kernel-3.9.5-301.fc19')
+
+
+    def test_get_arch(self):
+        rfi = koji_utils.RPMFileNameInfo(self.FILENAME)
+        self.assertEqual(rfi.get_arch(), 'x86_64')
+
+
+    def test_nvr_info_no_koji(self):
+        rfi = koji_utils.RPMFileNameInfo(self.FILENAME)
+        if not koji_utils.KOJI_INSTALLED:
+            self.assertEqual(rfi.get_nvr_info(), None)
+        else:
+            nvr_info = rfi.get_nvr_info()
+            self.assertEqual(nvr_info['epoch'], '')
+            self.assertEqual(nvr_info['name'], 'kernel')
+            self.assertEqual(nvr_info['release'], '301.fc19')
+            self.assertEqual(nvr_info['version'], '3.9.5')
+
+
 if __name__ == '__main__':
     unittest.main()
