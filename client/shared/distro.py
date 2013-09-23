@@ -87,16 +87,16 @@ class Probe(object):
     CHECK_FILE = None
 
     #: Sets the content that should be checked on the file pointed to by
-    #: :attr:`CHECK_FILE_EXISTS`. Leave it set to `None` (its default)
+    #: :attr:`CHECK_FILE`. Leave it set to `None` (its default)
     #: to check only if the file exists, and not check its contents
     CHECK_FILE_CONTAINS = None
 
     #: The name of the Linux Distribution to be returned if the file defined
-    #: by :attr:`CHECK_FILE_EXISTS` exist.
+    #: by :attr:`CHECK_FILE` exist.
     CHECK_FILE_DISTRO_NAME = None
 
     #: A regular expresion that will be run on the file pointed to by
-    #: :attr:`CHECK_FILE_EXISTS`
+    #: :attr:`CHECK_FILE`
     CHECK_VERSION_REGEX = None
 
     def __init__(self):
