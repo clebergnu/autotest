@@ -648,6 +648,9 @@ class TestViewManager(TempManager):
 
 
 class TestView(dbmodels.Model, model_logic.ModelExtensions):
+    '''
+    A view only model that exposes the test results
+    '''
     extra_fields = {
         'DATE(job_queued_time)': 'job queued day',
         'DATE(test_finished_time)': 'test finished day',
@@ -670,29 +673,90 @@ class TestView(dbmodels.Model, model_logic.ModelExtensions):
         'DATE(test_finished_time)',
     ]
 
+    #: Numeric index that identifies this test
     test_idx = dbmodels.IntegerField('test index', primary_key=True)
+
+    #: Numeric index that identifies the job this test was a part of
     job_idx = dbmodels.IntegerField('job index', null=True, blank=True)
+
+    #: Name that describes the test. This is usually the name of the test
+    #: passed to :func:`autotest.client.job.run_test`
     test_name = dbmodels.CharField(blank=True, max_length=90)
+
+
+    #: Sub directory that holds the test results, usually matches the same
+    #: name as :attr:`test_name`
     subdir = dbmodels.CharField('subdirectory', blank=True, max_length=180)
+
+
+    #: A numeric index that refers to a :class:`Kernel`
     kernel_idx = dbmodels.IntegerField('kernel index')
+
+    #: A numeric index that refers to a :class:`Status`
     status_idx = dbmodels.IntegerField('status index')
+
+    #: Textual description of the test result. Could be something like
+    #: `completed successfully` for a test that passed
     reason = dbmodels.CharField(blank=True, max_length=3072)
+
+    #: A numeric index that refers to a :class:`Machine`
     machine_idx = dbmodels.IntegerField('host index')
+
+    #: The date and time when this test was started
     test_started_time = dbmodels.DateTimeField(null=True, blank=True)
+
+    #: The date and time when this test finished
     test_finished_time = dbmodels.DateTimeField(null=True, blank=True)
+
+    #: The tag for the job, usually composed of the :attr:`job_idx`,
+    #: :attr:`job_owner` and :attr:`Machine.hostname`. One example would
+    #: be: `1-autotest/test.example.org`
     job_tag = dbmodels.CharField(blank=True, max_length=300)
+
+    #: The name of the job as submitted by the user. Usually the job
+    #: :attr:`name <autotest.frontend.afe.models.Job.name>` given to the
+    #: :class:`AFE Job model <autotest.frontend.afe.models.Job>`
     job_name = dbmodels.CharField(blank=True, max_length=300)
+
+    #: The name of the job owner. Usually the job
+    #: :attr:`owner <autotest.frontend.afe.models.Job.owner>` given to the
+    #: :class:`AFE Job model <autotest.frontend.afe.models.Job>`
     job_owner = dbmodels.CharField('owner', blank=True, max_length=240)
+
+    #: The date and time the job was scheduled
     job_queued_time = dbmodels.DateTimeField(null=True, blank=True)
+
+    #: The date and time the job actually started to run
     job_started_time = dbmodels.DateTimeField(null=True, blank=True)
+
+    #: The date and time the job finished running
     job_finished_time = dbmodels.DateTimeField(null=True, blank=True)
+
+    #: The numeric identification of the job submitted via the AFE service.
+    #: This refers to the implicit (automatically created) `id` field in
+    #: :class:`<autotest.frontend.afe.models.Job>`
     afe_job_id = dbmodels.IntegerField(null=True)
+
+
+    #: The name of the host that run this test
     hostname = dbmodels.CharField(blank=True, max_length=300)
+
+    #: The platform label (if any) of the host that run this test
     platform = dbmodels.CharField(blank=True, max_length=240)
+
+    #: The owner of the machine that run the job
     machine_owner = dbmodels.CharField(blank=True, max_length=240)
+
+    #: The kernel hash
     kernel_hash = dbmodels.CharField(blank=True, max_length=105)
+
+    #: The kernel base
     kernel_base = dbmodels.CharField(blank=True, max_length=90)
+
+    #: The kernel printable name
     kernel = dbmodels.CharField(blank=True, max_length=300)
+
+    #: The job status
     status = dbmodels.CharField(blank=True, max_length=30)
 
     objects = TestViewManager()
