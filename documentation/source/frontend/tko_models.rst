@@ -47,3 +47,10 @@ TKO is the autotest application dedicated to storing and querying test results.
 
 .. autoclass:: Test
     :members:
+
+
+:class:`TestView`
+=================
+
+.. autoclass:: TestView
+    :members:

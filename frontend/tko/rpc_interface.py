@@ -20,11 +20,38 @@ INTERFACE_VERSION = (2013, 05, 23)
 # table/spreadsheet view support
 
 def get_test_views(**filter_data):
+    '''
+    Get data from the :class:`autotest.frontend.tko.models.TestView` model
+
+    The optional paremeters are passed along as filters, so they must match
+    one of the field names in :class:`autotest.frontend.tko.models.TestView`.
+
+    This is a simple wrapper for the base model extension method
+    :meth:`autotest.frontend.afe.model_logic.ModelExtensions.list_objects`
+    and the utility function
+    :func:`autotest.frontend.afe.rpc_utils.prepare_for_serialization`.
+
+    :returns: A list of dictionaries, each containing as keys the fields as
+              defined in :class:`autotest.frontend.tko.models.TestView`
+    :rtype: list of dicts
+    '''
     return rpc_utils.prepare_for_serialization(
         models.TestView.list_objects(filter_data))
 
 
 def get_num_test_views(**filter_data):
+    '''
+    Record count from the :class:`autotest.frontend.tko.models.TestView` model
+
+    The optional paremeters are passed along as filters, so they must match
+    one of the field names in :class:`autotest.frontend.tko.models.TestView`.
+
+    This function returns the number of records that would be returned by
+    :func:`get_test_views`, provided that nothing changed in between.
+
+    :returns: record count on :class:`autotest.frontend.tko.models.TestView`
+    :rtype: int
+    '''
     return models.TestView.query_count(filter_data)
 
 
@@ -33,25 +60,40 @@ def get_group_counts(group_by, header_groups=None, fixed_headers=None,
     """
     Queries against TestView grouping by the specified fields and computings
     counts for each group.
-    * group_by should be a list of field names.
-    * extra_select_fields can be used to specify additional fields to select
-      (usually for aggregate functions).
-    * header_groups can be used to get lists of unique combinations of group
-      fields.  It should be a list of tuples of fields from group_by.  It's
-      primarily for use by the spreadsheet view.
-    * fixed_headers can map header fields to lists of values.  the header will
-      guaranteed to return exactly those value.  this does not work together
-      with header_groups.
 
-    Returns a dictionary with two keys:
-    * header_values contains a list of lists, one for each header group in
-      header_groups.  Each list contains all the values for the corresponding
-      header group as tuples.
-    * groups contains a list of dicts, one for each row.  Each dict contains
-      keys for each of the group_by fields, plus a 'group_count' key for the
-      total count in the group, plus keys for each of the extra_select_fields.
-      The keys for the extra_select_fields are determined by the "AS" alias of
-      the field.
+    :param group_by: list of field names.
+    :type group_by: list
+
+    :param extra_select_fields: can be used to specify additional fields to
+                                select (usually for aggregate functions).
+                                This actually a parameter that is is passed as
+                                the `select` parameter to the method
+                                :meth:`django.db.models.query.QuerySet.extra`.
+
+    :param header_groups: can be used to get lists of unique combinations of
+                          group fields. It should be a list of tuples of fields
+                          from group_by. It's primarily for use by the
+                          spreadsheet view.
+
+    :param fixed_headers: can map header fields to lists of values. The header
+                          will guaranteed to return exactly those value. This
+                          does not work together with header_groups.
+
+
+    The return data is a dictionary with two keys:
+
+    1. header_values: contains a list of lists, one for each header group
+       in header_groups. Each list contains all the values for the corresponding
+       header group as tuples.
+
+    2. groups: contains a list of dicts, one for each row. Each dict contains
+       keys for each of the group_by fields, plus a `group_count` key for the
+       total count in the group, plus keys for each of the extra_select_fields.
+       The keys for the extra_select_fields are determined by the "AS" alias of
+       the field.
+
+    :returns: a dictionary with two keys as described earlier
+    :rtype: dict
     """
     query = models.TestView.objects.get_query_set_with_joins(filter_data)
     # don't apply presentation yet, since we have extra selects to apply
@@ -73,6 +115,9 @@ def get_group_counts(group_by, header_groups=None, fixed_headers=None,
 def get_num_groups(group_by, **filter_data):
     """
     Gets the count of unique groups with the given grouping fields.
+
+    :param group_by:
+    :param filter_data:
     """
     query = models.TestView.objects.get_query_set_with_joins(filter_data)
     query = models.TestView.query_objects(filter_data, initial_query=query)
@@ -95,11 +140,14 @@ def get_status_counts(group_by, header_groups=[], fixed_headers={},
 def get_latest_tests(group_by, header_groups=[], fixed_headers={},
                      extra_info=[], **filter_data):
     """
+    
+
     Similar to get_status_counts, but return only the latest test result per
     group.  It still returns the same information (i.e. with pass count etc.)
     for compatibility.  It includes an additional field "test_idx" with each
     group.
-    @param extra_info a list containing the field names that should be returned
+
+    :param extra_info: a list containing the field names that should be returned
                       with each cell. The fields are returned in the extra_info
                       field of the return dictionary.
     """
