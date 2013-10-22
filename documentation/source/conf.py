@@ -3,6 +3,11 @@
 import sys
 import os
 
+try:
+    import autotest.common
+except ImportError:
+    import common
+
 from autotest.client.shared.version import get_version
 from autotest.frontend import setup_django_environment
 
