@@ -41,7 +41,6 @@ def get_file_list():
     pd_filelist.extend(_get_files(os.path.join(fe_dir, 'afe', 'templates')))
     pd_filelist.extend(_get_files(os.path.join(fe_dir, 'tko', 'fixtures')))
     pd_filelist.extend(_get_files(os.path.join(fe_dir, 'tko', 'migrations')))
-    pd_filelist.extend(_get_files(os.path.join(fe_dir, 'tko', 'sql')))
     pd_filelist.extend(_get_files(os.path.join(fe_dir, 'static')))
     pd_filelist.extend(_get_files(os.path.join(fe_dir, 'templates')))
     pd_filelist.extend(_get_files(os.path.join(fe_dir, 'tko', 'preconfigs')))

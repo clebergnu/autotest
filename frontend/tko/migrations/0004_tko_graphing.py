@@ -9,7 +9,12 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Removing primary key constraint on tko_iteration_result, allowing more than one keval per test
-        db.delete_foreign_key('tko_iteration_result', 'test_idx')
+        try:
+            # it looks like this key as a *foreign* key only exists on some database setups
+            db.delete_foreign_key('tko_iteration_result', 'test_idx')
+        except:
+            pass
+        # the primary key itself, though, exists on all setups
         db.delete_primary_key('tko_iteration_result')
         db.create_index('tko_iteration_result', ['test_idx'])
         create_perf_view = """
